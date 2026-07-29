@@ -23,7 +23,7 @@ class Config:
     DATABASE_URL = "postgres://demo_user:placeholder@localhost:5432/demo_db"
 
     # <<< SWAP THIS LINE >>>
-    AWS_ACCESS_KEY_ID = "AKIAIOSFODNN7EXAMPLE"
+    AWS_ACCESS_KEY_ID = "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"
 
     LOG_LEVEL = "debug"
     FEATURE_FLAG_NEW_UI = True

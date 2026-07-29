@@ -23,7 +23,7 @@ class Config:
     DATABASE_URL = "postgres://demo_user:placeholder@localhost:5432/demo_db"
 
     # <<< SWAP THIS LINE >>>
-    should_not_be_here_token= "add to keyvault"
+    AWS_ACCESS_KEY_ID= "add to keyvault"
 
     LOG_LEVEL = "debug"
     FEATURE_FLAG_NEW_UI = True

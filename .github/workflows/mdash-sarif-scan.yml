@@ -1,0 +1,47 @@
+name: MDASH Security Scan
+
+# Runs MDASH and uploads its SARIF output to GHAS code scanning.
+# Save this file as .github/workflows/mdash-sarif-scan.yml in the target repo.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'   # optional weekly run, remove if not needed
+  workflow_dispatch: {}    # lets you trigger it manually for a demo
+
+permissions:
+  contents: read
+  security-events: write   # required to upload SARIF
+  actions: read             # required for private repos uploading SARIF
+
+jobs:
+  mdash-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # --- Replace this step with however MDASH actually runs ---
+      # If MDASH is a CLI binary/script, install or invoke it here.
+      # If it's a container image, swap this for a `docker run` step instead.
+      - name: Run MDASH scan
+        run: |
+          # Example placeholder — adjust to the real MDASH invocation
+          ./mdash scan --output results.sarif --format sarif
+      # -------------------------------------------------------------
+
+      - name: Check SARIF file exists
+        run: |
+          if [ ! -f results.sarif ]; then
+            echo "results.sarif not found — check the MDASH scan step output path"
+            exit 1
+          fi
+
+      - name: Upload SARIF to GHAS
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+          category: mdash   # keeps this distinguishable from CodeQL/AI Scan alerts

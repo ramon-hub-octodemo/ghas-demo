@@ -27,8 +27,8 @@ jobs:
       # --- Replace this step with however MDASH actually runs ---
       # If MDASH is a CLI binary/script, install or invoke it here.
       # If it's a container image, swap this for a `docker run` step instead.
-      - name: results.sarif
-        run: results.sarif
+      - name: mdash example named results.sarif
+        run: ls -la results.sarif
           # Example placeholder — adjust to the real MDASH invocation
           ./mdash scan --output results.sarif --format sarif
       # -------------------------------------------------------------

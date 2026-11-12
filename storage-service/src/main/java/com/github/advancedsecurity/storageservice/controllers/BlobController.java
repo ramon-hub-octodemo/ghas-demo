@@ -3,11 +3,12 @@ package com.github.advancedsecurity.storageservice.controllers;
 import java.util.UUID;
 import java.util.Arrays;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
+import java.io.DataInputStream;
 import java.io.OutputStream;
-import java.io.ObjectOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ByteArrayInputStream;
+import java.util.Base64;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,8 +42,8 @@ public class BlobController {
     private String[] allowedContentTypes;
 
     private Blob deserializeBlob(InputStream inputStream) throws IOException, ClassNotFoundException{
-        ObjectInputStream in = new ObjectInputStream(inputStream);
-        Blob b = (Blob)in.readObject();
+        DataInputStream in = new DataInputStream(inputStream);
+        Blob b = new Blob(in.readUTF(), Base64.getDecoder().decode(in.readUTF()));
         in.close();
         return b;
     }
@@ -83,8 +84,9 @@ public class BlobController {
             Resource resource = this.resourceLoader.getResource(String.format("s3://%s/%s/%s", bucket, profile.name, id.toString()));
             WritableResource writableResource = (WritableResource) resource;
             OutputStream outputStream = writableResource.getOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(outputStream);
-            out.writeObject(blob);
+            DataOutputStream out = new DataOutputStream(outputStream);
+            out.writeUTF(blob.getMimeType());
+            out.writeUTF(blob.getData());
             out.close();
             outputStream.close();
             return id;

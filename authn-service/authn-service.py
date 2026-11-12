@@ -29,7 +29,7 @@ def get_access_token(code):
         'Accept': 'application/json'
     })
 
-    app.logger.debug('Received response %s with status %d', r.json(), r.status_code)
+    app.logger.debug('Received access token response with status %d', r.status_code)
     data = r.json()
 
     if 'error' in data:
@@ -44,7 +44,7 @@ def get_user_profile(access_token):
         'Authorization': f'Bearer {access_token}'
     })
 
-    app.logger.debug('Received response %s with status %d', r.json(), r.status_code)
+    app.logger.debug('Received user profile response with status %d', r.status_code)
     data = r.json()
 
     if 'error' in data:
@@ -54,7 +54,7 @@ def get_user_profile(access_token):
 
 @app.route("/authenticate/<code>")
 def authenticate(code):
-    app.logger.debug("Received authentication request with code: %s", code)
+    app.logger.debug("Received authentication request")
     access_info, error = get_access_token(code)
 
     if error:
@@ -70,7 +70,7 @@ def authenticate(code):
         'exp': int((datetime.now(timezone.utc) + timedelta(days=1)).timestamp()),
         'profile': {k:v for k, v in profile.items() if k in ['login', 'name', 'email']}
     }
-    app.logger.debug("Created claimset: %s", claimset)
+    app.logger.debug("Created authentication claimset")
 
     token = jwt.encode(claimset, 'secretsecret1234secretsecret1234', algorithm='HS256')
 
